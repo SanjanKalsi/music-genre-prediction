@@ -6,5 +6,5 @@ tensorflow==2.9.0
 keras==2.9.0
 pydub==0.25.1
 soundfile==0.10.2
-pysndfile==1.4.2
-librosa==0.8.0
+libsndfile1==1.1.0
+librosa==0.9.2
