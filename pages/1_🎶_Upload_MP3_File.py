@@ -235,12 +235,19 @@ def extract_features_from_wav(wav_file_location):
 
 
 
+def extract_relevant_from_range(wav_file, t1, t2):
+  wav = pydub.AudioSegment.from_wav(wav_file)
+  wav = wav[1000 * t1 : 1000 * t2]
+  wav.export("music_file.wav", format='wav')
+
+
 
 def get_prediction_from_saved_model(df):
 
     #get final prediction from the upload
     generes = ["blues", "classical", "country", "disco", "hiphop", "jazz", "metal", "pop", "reggae", "rock"]
     reconstructed_model = keras.models.load_model("genre_prediction_model.h5")
+    print(df)
     prediction = reconstructed_model.predict(df)
     prediction_with_round_off = np.round(prediction, 2)[0]
 
@@ -270,15 +277,17 @@ if uploaded_sound_file is not None:
             print("WAV file")
             audio = pydub.AudioSegment.from_wav(uploaded_sound_file)
             audio.export("music_file.wav",format="wav")
+            extract_relevant_from_range("music_file.wav", 10, 13)
+
             is_sound_file = 1
         elif uploaded_sound_file.name.endswith('mp3'):
             print("MP3 file")
             audio = pydub.AudioSegment.from_mp3(uploaded_sound_file)
             audio.export("music_file.wav",format="wav")
+            extract_relevant_from_range("music_file.wav", 10, 13)
             is_sound_file = 1
 
         if is_sound_file == 1:
             df = extract_features_from_wav("music_file.wav")
             message = get_prediction_from_saved_model(df)
             st.success(message)
-
